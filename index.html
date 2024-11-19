@@ -3,618 +3,963 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paycheck Calculator</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&family=Poppins:wght@600&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>Investment Education Tool</title>
+    <!-- Required CDN links -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --primary-color: #00796B;
-            --primary-variant: #004D40;
-            --secondary-color: #26A69A;
-            --background: #F5F5F5;
-            --surface: #FFFFFF;
-            --error: #B00020;
-            --on-primary: #FFFFFF;
-            --on-secondary: #000000;
-            --on-background: #000000;
-            --on-surface: #000000;
-            --on-error: #FFFFFF;
+            --md-sys-color-primary: #006A6A;
+            --md-sys-color-on-primary: #FFFFFF;
+            --md-sys-color-primary-container: #6FF7F7;
+            --md-sys-color-on-primary-container: #002020;
+            --md-sys-color-secondary: #4A6363;
+            --md-sys-color-on-secondary: #FFFFFF;
+            --md-sys-color-secondary-container: #CCE8E7;
+            --md-sys-color-on-secondary-container: #051F1F;
+            --md-sys-color-tertiary: #4B607C;
+            --md-sys-color-error: #BA1A1A;
+            --md-sys-color-background: #FAFDFC;
+            --md-sys-color-on-background: #191C1C;
+            --md-sys-color-surface: #FAFDFC;
+            --md-sys-color-on-surface: #191C1C;
+            --md-sys-color-surface-variant: #DAE5E4;
+            --md-sys-color-outline: #6F7978;
         }
 
-        body { 
-            font-family: 'Roboto', sans-serif; 
-            max-width: 800px; 
-            margin: 0 auto; 
-            padding: 20px; 
-            line-height: 1.6; 
-            color: var(--on-background);
-            background-color: var(--background);
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2300796B' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-        }
-
-        h1, h2, h3 { 
-            font-family: 'Poppins', sans-serif;
-            color: var(--primary-color);
-        }
-
-        .page { display: none; }
-        .page.active { display: block; }
-
-        .form-group { margin-bottom: 20px; }
-
-        label { 
-            display: block; 
-            margin-bottom: 5px; 
-            font-weight: 500; 
-            color: var(--on-surface);
-        }
-
-        input[type="text"], select { 
-            width: 100%; 
-            padding: 12px; 
-            border: 1px solid rgba(0,0,0,0.1); 
-            border-radius: 4px; 
-            font-size: 16px;
-            transition: all 0.3s;
-            background-color: var(--surface);
-            color: var(--on-surface);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        input[type="text"]:focus, select:focus {
-            border-color: var(--primary-color);
-            outline: none;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        button { 
-            padding: 12px 24px; 
-            background: linear-gradient(45deg, var(--primary-color), var(--primary-variant));
-            color: var(--on-primary); 
-            border: none; 
-            border-radius: 4px; 
-            cursor: pointer; 
-            margin-right: 10px; 
-            margin-bottom: 10px;
-            font-size: 16px;
-            transition: all 0.3s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        button:hover { 
-            background: linear-gradient(45deg, var(--primary-variant), var(--primary-color));
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        }
-
-        .explanation { 
-            background-color: var(--surface); 
-            border-left: 4px solid var(--secondary-color); 
-            padding: 15px; 
-            margin-bottom: 20px; 
-            border-radius: 0 4px 4px 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .section { 
-            margin-bottom: 30px; 
-            background-color: var(--surface);
-            border-radius: 8px;
-            padding: 20px; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: all 0.3s;
-        }
-
-        .section:hover {
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-        }
-
-        .header { 
-            text-align: left; 
-            margin-bottom: 20px; 
-        }
-
-        .logo { 
-            max-width: 150px; 
-            height: auto; 
-            margin-bottom: 20px; 
-            cursor: pointer; 
-        }
-
-        .title-box {
-            background-color: var(--primary-color);
-            color: var(--on-primary);
-            padding: 15px 20px;
-            border-radius: 8px;
-            display: block;
-            margin-top: 10px;
-            text-align: left;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .title-box h1 {
-            color: var(--on-primary);
+        * {
+            box-sizing: border-box;
             margin: 0;
+            padding: 0;
         }
 
-        .info-link { 
-            font-size: 0.9em; 
-            margin-bottom: 5px; 
-            color: var(--primary-color);
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.5;
+            color: var(--md-sys-color-on-surface);
+            background-color: var(--md-sys-color-background);
         }
 
-        .material-icons {
-            vertical-align: middle;
-            margin-right: 5px;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
         }
 
-        .button-container {
+        .header {
+            background-color: var(--md-sys-color-surface);
+            padding: 16px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .module {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .module.active {
+            display: block;
+        }
+
+        .card {
+            background: var(--md-sys-color-surface);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .nav-buttons {
             display: flex;
+            gap: 10px;
             flex-wrap: wrap;
+            margin-top: 16px;
+        }
+
+        .nav-buttons button {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .calculator {
+            margin: 20px 0;
+            padding: 20px;
+            background: var(--md-sys-color-surface-variant);
+            border-radius: 8px;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .chart-container {
+            margin: 20px 0;
+            height: 400px;
+            position: relative;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .quiz-container {
+            margin: 20px 0;
+        }
+
+        .quiz-question {
+            margin-bottom: 20px;
+            padding: 20px;
+            background: var(--md-sys-color-surface-variant);
+            border-radius: 8px;
+        }
+
+        .quiz-options {
+            display: grid;
             gap: 10px;
         }
 
-        table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            margin-top: 20px; 
-            background-color: var(--surface);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        .quiz-option {
+            padding: 15px;
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
 
-        th, td { 
-            border: 1px solid rgba(0,0,0,0.1); 
-            padding: 12px; 
-            text-align: left; 
+        .quiz-option:hover {
+            background: var(--md-sys-color-surface-variant);
         }
 
-        th { 
-            background-color: var(--primary-color); 
-            color: var(--on-primary);
+        .quiz-option.correct {
+            background: #4CAF50;
+            color: white;
         }
 
-        .breakdown { 
-            display: none; 
-            margin-top: 10px; 
+        .quiz-option.incorrect {
+            background: #f44336;
+            color: white;
         }
 
-        .breakdown.active { 
-            display: block; 
-        }
-
-        .toggle-breakdown { 
-            background: none; 
-            border: none; 
-            color: var(--primary-color); 
-            cursor: pointer; 
-            padding: 0; 
-        }
-
-        .toggle-breakdown:hover { 
-            text-decoration: underline; 
-        }
-
-        .bar-graph {
-            width: 100%;
-            max-width: 800px;
-            height: 400px;
-            margin: 0 auto 40px;
-            position: relative;
-            background-color: var(--surface);
-            border: 1px solid rgba(0,0,0,0.1);
-            border-radius: 8px;
+        .explanation {
+            background: var(--md-sys-color-secondary-container);
             padding: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            margin: 20px 0;
         }
 
-        .bar {
-            position: absolute;
-            transition: height 0.5s ease-in-out;
-            border-radius: 4px 4px 0 0;
+        .table-container {
+            overflow-x: auto;
         }
 
-        .bar-label {
-            position: absolute;
-            bottom: -30px;
-            transform: translateX(-50%);
-            text-align: center;
-            font-size: 12px;
-            width: 100px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
         }
 
-        .bar-value {
-            position: absolute;
-            top: -20px;
-            transform: translateX(-50%);
-            text-align: center;
-            font-size: 12px;
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--md-sys-color-outline);
+        }
+
+        th {
+            background-color: var(--md-sys-color-surface-variant);
+        }
+
+        .result-highlight {
             font-weight: bold;
+            color: var(--md-sys-color-primary);
+            font-size: 1.2em;
         }
 
-        .x-axis {
-            position: absolute;
-            bottom: 50%;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background-color: rgba(0,0,0,0.2);
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .y-axis {
-            position: absolute;
-            bottom: 0;
-            left: 40px;
-            top: 0;
-            width: 2px;
-            background-color: rgba(0,0,0,0.2);
-        }
-
-        .axis-label {
-            position: absolute;
-            font-size: 12px;
-            color: rgba(0,0,0,0.6);
-        }
-
-        @media (max-width: 600px) {
-            button {
-                width: 100%;
-                margin-right: 0;
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
             }
+
+            .card {
+                padding: 16px;
+            }
+
+            .nav-buttons button {
+                min-width: 100%;
+            }
+
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        /* Tooltip styles */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            font-size: 14px;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <img src="finmango.png" alt="FinMango Logo" class="logo" onclick="showPage('introPage')">
-        <div class="title-box">
-            <h1>Paycheck Calculator</h1>
+    <header class="header">
+        <div class="container">
+            <h1>Investment Education Tool</h1>
         </div>
-    </div>
+    </header>
 
-    <div id="introPage" class="page active">
-        <h2>Welcome to Your Comprehensive Paycheck Calculator</h2>
-        <div class="explanation">
-            <p><span class="material-icons">info</span> This calculator, by <a href="https://finmango.org" target="_blank">FinMango</a>, helps you evaluate your financial situation across different cities in the United States. It considers factors such as:</p>
-            <ul>
-                <li>Your annual salary</li>
-                <li>Federal, state, and local taxes</li>
-                <li>Cost of living components</li>
-            </ul>
-            <p>Compare up to three cities to help make informed decisions about where to live and work.</p>
-        </div>
-        <div class="button-container">
-            <button onclick="showPage('locationPage')"><span class="material-icons">arrow_forward</span> Let's Get Started</button>
-        </div>
-    </div>
-    
-    <div id="locationPage" class="page">
-        <h2>Select Cities to Compare</h2>
-        <div class="explanation">
-            <p><span class="material-icons">location_city</span> Choose up to three cities you'd like to compare.</p>
-        </div>
-        <div class="section">
-            <div class="form-group">
-                <label for="location1">City 1:</label>
-                <select id="location1" required></select>
-            </div>
-            <div class="form-group">
-                <label for="location2">City 2 (optional):</label>
-                <select id="location2"></select>
-            </div>
-            <div class="form-group">
-                <label for="location3">City 3 (optional):</label>
-                <select id="location3"></select>
+    <div class="container">
+        <!-- Navigation -->
+        <div class="card">
+            <h2>Investment Learning Modules</h2>
+            <div class="nav-buttons">
+                <button onclick="showModule('module1')">
+                    <span class="material-symbols-rounded">trending_up</span>
+                    Power of Compounding
+                </button>
+                <button onclick="showModule('module2')">
+                    <span class="material-symbols-rounded">analytics</span>
+                    Mutual Fund Evaluation
+                </button>
+                <button onclick="showModule('module3')">
+                    <span class="material-symbols-rounded">compare</span>
+                    Index Comparison
+                </button>
+                <button onclick="showModule('module4')">
+                    <span class="material-symbols-rounded">warning</span>
+                    Investment Mistakes
+                </button>
+                <button onclick="showModule('module5')">
+                    <span class="material-symbols-rounded">school</span>
+                    Investment Practice
+                </button>
             </div>
         </div>
-        <div class="button-container">
-            <button onclick="showPage('introPage')"><span class="material-icons">arrow_back</span> Previous</button>
-            <button onclick="showPage('salaryPage')"><span class="material-icons">arrow_forward</span> Next</button>
-        </div>
-    </div>
 
-    <div id="salaryPage" class="page">
-        <h2>Enter Your Salary Information</h2>
-        <div class="explanation">
-            <p><span class="material-icons">monetization_on</span> Provide your annual salary. This information will be used to calculate your take-home pay after taxes and compare it with the cost of living in each selected city.</p>
-        </div>
-        <div class="section">
-            <div class="form-group">
-                <label for="salary">Annual Salary ($):</label>
-                <input type="text" id="salary" required>
+        <!-- Module 1: Power of Compounding -->
+        <div id="module1" class="module">
+            <div class="card">
+                <h2>The Power of Compounding</h2>
+                <div class="explanation">
+                    <p>"Compound interest is the eighth wonder of the world. He who understands it, earns it; he who doesn't, pays it." - Albert Einstein</p>
+                    <h3>Rule of 72</h3>
+                    <p>The Rule of 72 is a simple way to determine how long an investment will take to double given a fixed annual rate of return. Just divide 72 by the annual rate of return.</p>
+                    <p>For example: At 7% annual returns, money doubles in approximately 72 ÷ 7 = 10.3 years.</p>
+                </div>
+                
+                <div class="calculator">
+                    <h3>Compound Interest Calculator</h3>
+                    <div class="input-group">
+                        <label for="principal">Initial Investment ($)</label>
+                        <input type="number" id="principal" value="10000">
+                    </div>
+                    <div class="input-group">
+                        <label for="monthlyContribution">Monthly Contribution ($)</label>
+                        <input type="number" id="monthlyContribution" value="500">
+                    </div>
+                    <div class="input-group">
+                        <label for="rate">Annual Return (%)</label>
+                        <input type="number" id="rate" value="7">
+                    </div>
+                    <div class="input-group">
+                        <label for="years">Time Period (Years)</label>
+                        <input type="number" id="years" value="30">
+                    </div>
+                    <button onclick="calculateCompound()">Calculate Growth</button>
+                </div>
+                
+                <div id="compoundingChart" class="chart-container">
+                    <canvas id="compoundingCanvas"></canvas>
+                </div>
             </div>
         </div>
-        <div class="button-container">
-            <button onclick="showPage('locationPage')"><span class="material-icons">arrow_back</span> Previous</button>
-            <button onclick="calculateResults()"><span class="material-icons">calculate</span> Calculate Results</button>
-        </div>
-    </div>
 
-    <div id="resultsPage" class="page">
-        <h2>Your Paycheck and Cost of Living Comparison</h2>
-        <div class="explanation">
-            <p><span class="material-icons">assessment</span> Below is a summary of your financial situation in each selected city. This includes your take-home pay and annual expenses. Click "Show Breakdown" to see detailed calculations.</p>
+        <!-- Module 2: Mutual Fund Evaluation -->
+        <div id="module2" class="module">
+            <div class="card">
+                <h2>Mutual Fund Evaluation</h2>
+                <div class="explanation">
+                    <h3>Key Evaluation Criteria</h3>
+                    <ul>
+                        <li>Expense Ratio: Typically, lower is better. Index funds often have ratios below 0.2%</li>
+                        <li>Performance: Compare against appropriate benchmarks</li>
+                        <li>Risk Measures: Consider Sharpe ratio and standard deviation</li>
+                        <li>Morningstar Rating: Independent analysis on a 1-5 star scale</li>
+                    </ul>
+                </div>
+
+                <div class="calculator">
+                    <h3>Fund Cost Comparison Calculator</h3>
+                    <div class="input-group">
+                        <label for="investment">Initial Investment ($)</label>
+                        <input type="number" id="investment" value="100000">
+                    </div>
+                    <div class="input-group">
+                        <label for="fund1Expense">Fund 1 Expense Ratio (%)</label>
+                        <input type="number" id="fund1Expense" step="0.01" value="0.04">
+                    </div>
+                    <div class="input-group">
+                        <label for="fund2Expense">Fund 2 Expense Ratio (%)</label>
+                        <input type="number" id="fund2Expense" step="0.01" value="0.75">
+                    </div>
+                    <button onclick="compareFunds()">Compare Costs Over Time</button>
+                </div>
+
+                <div id="fundComparisonChart" class="chart-container">
+                    <canvas id="fundCanvas"></canvas>
+                </div>
+            </div>
         </div>
-        <div id="resultsContainer">
-            <!-- Results will be inserted here by JavaScript -->
+
+        <!-- Module 3: Index Comparison -->
+        <div id="module3" class="module">
+            <div class="card">
+                <h2>S&P 500 vs Small Cap Value Comparison</h2>
+                <div class="explanation">
+                    <h3>Historical Performance (1926-2023)</h3>
+                    <p>Based on Fama-French research, small cap value stocks have historically outperformed the broader market due to size and value risk premiums.</p>
+                </div>
+
+                <div id="indexComparisonChart" class="chart-container">
+                    <canvas id="indexCanvas"></canvas>
+                </div>
+
+                <button onclick="showIndexComparison()">Show Historical Comparison</button>
+            </div>
         </div>
-        <div class="button-container">
-            <button onclick="showPage('locationPage')"><span class="material-icons">refresh</span> Start Over</button>
+
+        <!-- Module 4: Investment Mistakes -->
+        <div id="module4" class="module">
+            <div class="card">
+                <h2>Common Investment Mistakes</h2>
+                <div class="explanation">
+                    <h3>Top 3 Mistakes to Avoid</h3>
+                    <ol>
+                        <li>Timing the Market</li>
+                        <li>Ignoring Fees</li>
+                        <li>Lack of Diversification</li>
+                    </ol>
+                </div>
+
+                <div class="calculator">
+                    <h3>Cost of Market Timing Calculator</h3>
+                    <div class="input-group">
+                        <label for="investmentAmount">Investment Amount ($)</label>
+                        <input type="number" id="investmentAmount" value="10000">
+                    </div>
+                    <div class="input-group">
+                        <label for="missedDays">Number of Best Days Missed</label>
+                        <input type="number" id="missedDays" value="10">
+                    </div>
+                    <button onclick="calculateTimingImpact()">Calculate Impact</button>
+                </div>
+
+                <div id="timingImpactChart" class="chart-container">
+                    <canvas id="timingCanvas"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 5: Investment Practice -->
+        <div id="module5" class="module">
+            <div class="card">
+                <h2>Investment Practice</h2>
+                <div class="explanation">
+                    <h3>Portfolio Rebalancing Exercise</h3>
+                    <p>Practice maintaining your target asset allocation through market changes.</p>
+                </div>
+
+                <div class="calculator">
+                    <h3>Portfolio Rebalancing Simulator</h3>
+                    <div class="input-group">
+                        <label for="stockAllocation">Target Stock Allocation (%)</label>
+                        <input type="number" id="stockAllocation" value="70">
+                    </div>
+                    <div class="input-group">
+                        <label for="bondAllocation">Target Bond Allocation (%)</label>
+                        <input type="number" id="bondAllocation" value="30">
+                    </div>
+                    <div class="input-group">
+                        <label for="portfolioValue">Current Portfolio Value ($)</label>
+                        <input type="number" id="portfolioValue" value="100000">
+                    </div>
+                    <button onclick="simulateRebalancing()">Simulate Market Changes</button>
+                </div>
+
+                <div id="rebalancingChart" class="chart-container">
+                    <canvas id="rebalancingCanvas"></canvas>
+                </div>
+
+                <div class="quiz-container">
+                    <h3>Knowledge Check</h3>
+                    <div id="quizContent"></div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-    const locations = [
-        { name: "Atlanta, GA", stateTax: 0.0575, localTax: 0, costIndex: 1.0 },
-        { name: "Austin, TX", stateTax: 0, localTax: 0, costIndex: 1.1 },
-        { name: "Baltimore, MD", stateTax: 0.0575, localTax: 0.032, costIndex: 1.1 },
-        { name: "Boston, MA", stateTax: 0.05, localTax: 0, costIndex: 1.5 },
-        { name: "Charlotte, NC", stateTax: 0.0525, localTax: 0, costIndex: 0.95 },
-        { name: "Chicago, IL", stateTax: 0.0495, localTax: 0.0925, costIndex: 1.2 },
-        { name: "Cincinnati, OH", stateTax: 0.0399, localTax: 0.021, costIndex: 0.9 },
-        { name: "Cleveland, OH", stateTax: 0.0399, localTax: 0.02, costIndex: 0.9 },
-        { name: "Columbus, OH", stateTax: 0.0399, localTax: 0.025, costIndex: 0.95 },
-        { name: "Dallas, TX", stateTax: 0, localTax: 0, costIndex: 1.0 },
-        { name: "Denver, CO", stateTax: 0.0455, localTax: 0, costIndex: 1.15 },
-        { name: "Detroit, MI", stateTax: 0.0425, localTax: 0.024, costIndex: 0.9 },
-        { name: "Houston, TX", stateTax: 0, localTax: 0, costIndex: 0.95 },
-        { name: "Indianapolis, IN", stateTax: 0.0323, localTax: 0.0162, costIndex: 0.9 },
-        { name: "Kansas City, MO", stateTax: 0.054, localTax: 0.01, costIndex: 0.9 },
-        { name: "Las Vegas, NV", stateTax: 0, localTax: 0, costIndex: 1.05 },
-        { name: "Los Angeles, CA", stateTax: 0.0930, localTax: 0, costIndex: 1.5 },
-        { name: "Miami, FL", stateTax: 0, localTax: 0, costIndex: 1.2 },
-        { name: "Milwaukee, WI", stateTax: 0.0765, localTax: 0, costIndex: 0.95 },
-        { name: "Minneapolis, MN", stateTax: 0.0785, localTax: 0, costIndex: 1.05 },
-        { name: "Nashville, TN", stateTax: 0, localTax: 0, costIndex: 1.05 },
-        { name: "New Orleans, LA", stateTax: 0.0425, localTax: 0, costIndex: 0.95 },
-        { name: "New York, NY", stateTax: 0.0685, localTax: 0.03876, costIndex: 1.8 },
-        { name: "Orlando, FL", stateTax: 0, localTax: 0, costIndex: 1.0 },
-        { name: "Philadelphia, PA", stateTax: 0.0307, localTax: 0.038907, costIndex: 1.15 },
-        { name: "Phoenix, AZ", stateTax: 0.0459, localTax: 0, costIndex: 1.05 },
-        { name: "Pittsburgh, PA", stateTax: 0.0307, localTax: 0.03, costIndex: 0.95 },
-        { name: "Portland, OR", stateTax: 0.099, localTax: 0, costIndex: 1.2 },
-        { name: "Raleigh, NC", stateTax: 0.0525, localTax: 0, costIndex: 1.0 },
-        { name: "Sacramento, CA", stateTax: 0.0930, localTax: 0, costIndex: 1.2 },
-        { name: "Salt Lake City, UT", stateTax: 0.0495, localTax: 0, costIndex: 1.1 },
-        { name: "San Antonio, TX", stateTax: 0, localTax: 0, costIndex: 0.9 },
-        { name: "San Diego, CA", stateTax: 0.0930, localTax: 0, costIndex: 1.4 },
-        { name: "San Francisco, CA", stateTax: 0.0930, localTax: 0, costIndex: 1.9 },
-        { name: "Seattle, WA", stateTax: 0, localTax: 0, costIndex: 1.5 },
-        { name: "St. Louis, MO", stateTax: 0.054, localTax: 0.01, costIndex: 0.9 },
-        { name: "Tampa, FL", stateTax: 0, localTax: 0, costIndex: 1.0 },
-        { name: "Washington, DC", stateTax: 0.0895, localTax: 0, costIndex: 1.5 }
-    ];
+        // Global chart instances
+        let compoundingChart = null;
+        let fundComparisonChart = null;
+        let indexComparisonChart = null;
+        let timingImpactChart = null;
+        let rebalancingChart = null;
 
-    function populateLocations() {
-        const selects = [document.getElementById('location1'), document.getElementById('location2'), document.getElementById('location3')];
-        selects.forEach(select => {
-            select.innerHTML = '<option value="">Select a city</option>';
-            locations.forEach(location => {
-                const option = document.createElement('option');
-                option.value = location.name;
-                option.textContent = location.name;
-                select.appendChild(option);
-            });
-        });
-    }
-
-    function showPage(pageId) {
-        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
-    }
-
-    function toggleBreakdown(id) {
-        const breakdown = document.getElementById(id);
-        breakdown.classList.toggle('active');
-    }
-
-    function calculateFederalTax(salary) {
-        if (salary <= 9950) return salary * 0.10;
-        if (salary <= 40525) return 995 + (salary - 9950) * 0.12;
-        if (salary <= 86375) return 4664 + (salary - 40525) * 0.22;
-        if (salary <= 164925) return 14751 + (salary - 86375) * 0.24;
-        if (salary <= 209425) return 33603 + (salary - 164925) * 0.32;
-        if (salary <= 523600) return 47843 + (salary - 209425) * 0.35;
-        return 157804.25 + (salary - 523600) * 0.37;
-    }
-
-    function formatMoney(amount) {
-        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
-    }
-
-    function calculateResults() {
-        if (!validateForm()) {
-            return;
-        }
-        
-        const salary = parseFloat(document.getElementById('salary').value.replace(/[^0-9.]/g, ''));
-        const selectedLocations = [
-            document.getElementById('location1').value,
-            document.getElementById('location2').value,
-            document.getElementById('location3').value
-        ].filter(Boolean);
-
-        const results = selectedLocations.map(locationName => {
-            const location = locations.find(loc => loc.name === locationName);
-            const federalTax = calculateFederalTax(salary);
-            const stateTax = salary * location.stateTax;
-            const localTax = salary * location.localTax;
-            const socialSecurity = Math.min(salary * 0.062, 9114);
-            const medicare = salary * 0.0145;
-            const totalTax = federalTax + stateTax + localTax + socialSecurity + medicare;
-            const takehomePay = salary - totalTax;
-
-            const baseExpenses = 40000;
-            const annualExpenses = baseExpenses * location.costIndex;
-
-            return {
-                location: locationName,
-                grossPay: salary,
-                federalTax: federalTax,
-                stateTax: stateTax,
-                localTax: localTax,
-                socialSecurity: socialSecurity,
-                medicare: medicare,
-                totalTax: totalTax,
-                takehomePay: takehomePay,
-                annualExpenses: annualExpenses,
-                remainingMoney: takehomePay - annualExpenses,
-                costIndex: location.costIndex
-            };
-        });
-
-        displayResults(results);
-        showPage('resultsPage');
-    }
-
-    function displayResults(results) {
-        const container = document.getElementById('resultsContainer');
-        container.innerHTML = '';
-
-        // Add improved bar graph
-        const graphDiv = document.createElement('div');
-        graphDiv.className = 'section';
-        graphDiv.innerHTML = '<h3>Comparison of Remaining Money</h3>';
-        const barGraph = document.createElement('div');
-        barGraph.className = 'bar-graph';
-
-        const maxAbsRemaining = Math.max(...results.map(r => Math.abs(r.remainingMoney)));
-        barGraph.style.width = '100%';
-
-        // Add y-axis
-        const yAxis = document.createElement('div');
-        yAxis.className = 'y-axis';
-        barGraph.appendChild(yAxis);
-
-        // Add x-axis
-        const xAxis = document.createElement('div');
-        xAxis.className = 'x-axis';
-        barGraph.appendChild(xAxis);
-
-        // Add axis labels
-        const yAxisLabel = document.createElement('div');
-        yAxisLabel.className = 'axis-label';
-        yAxisLabel.style.left = '10px';
-        yAxisLabel.style.top = '50%';
-        yAxisLabel.style.transform = 'rotate(-90deg) translateX(-50%)';
-        yAxisLabel.textContent = 'Remaining Money ($)';
-        barGraph.appendChild(yAxisLabel);
-
-        const xAxisLabel = document.createElement('div');
-        xAxisLabel.className = 'axis-label';
-        xAxisLabel.style.bottom = '-40px';
-        xAxisLabel.style.left = '50%';
-        xAxisLabel.style.transform = 'translateX(-50%)';
-        xAxisLabel.textContent = 'Cities';
-        barGraph.appendChild(xAxisLabel);
-
-        results.forEach((result, index) => {
-            const bar = document.createElement('div');
-            bar.className = 'bar';
-            const height = (Math.abs(result.remainingMoney) / maxAbsRemaining) * 45;
-            bar.style.height = `${height}%`;
-            bar.style.left = `${(index / results.length) * 100}%`;
-            bar.style.width = `${100 / results.length - 5}%`;
-            bar.style.backgroundColor = result.remainingMoney >= 0 ? '#26A69A' : '#EF5350';
-            bar.style.bottom = result.remainingMoney >= 0 ? '50%' : `calc(50% - ${height}%)`;
-
-            const label = document.createElement('div');
-            label.className = 'bar-label';
-            label.textContent = result.location;
-            label.style.left = `${(index / results.length) * 100 + (100 / results.length / 2)}%`;
-            label.style.bottom = '-30px';
-
-            const value = document.createElement('div');
-            value.className = 'bar-value';
-            value.textContent = formatMoney(result.remainingMoney);
-            value.style.left = `${(index / results.length) * 100 + (100 / results.length / 2)}%`;
-            value.style.bottom = `${result.remainingMoney >= 0 ? height + 50 : 50 - height}%`;
-
-            barGraph.appendChild(bar);
-            barGraph.appendChild(label);
-            barGraph.appendChild(value);
-        });
-
-        graphDiv.appendChild(barGraph);
-        container.appendChild(graphDiv);
-
-        // Detailed results
-        results.forEach((result, index) => {
-            const resultDiv = document.createElement('div');
-            resultDiv.className = 'section';
-            resultDiv.innerHTML = `
-                <h3>${result.location}</h3>
-                <p>Take-Home Pay: ${formatMoney(result.takehomePay)}</p>
-                <p>Annual Expenses: ${formatMoney(result.annualExpenses)}</p>
-                <p>Remaining Money: <span style="color: ${result.remainingMoney >= 0 ? '#26A69A' : '#EF5350'}">${formatMoney(result.remainingMoney)}</span></p>
-                <button class="toggle-breakdown" onclick="toggleBreakdown('breakdown-${index}')">
-                    <span class="material-icons">expand_more</span> Show Breakdown
-                </button>
-                <div id="breakdown-${index}" class="breakdown">
-                    <h4>Detailed Breakdown</h4>
-                    <table>
-                        <tr><td>Gross Pay:</td><td>${formatMoney(result.grossPay)}</td></tr>
-                        <tr><td>Federal Tax:</td><td>${formatMoney(result.federalTax)}</td></tr>
-                        <tr><td>State Tax:</td><td>${formatMoney(result.stateTax)}</td></tr>
-                        <tr><td>Local Tax:</td><td>${formatMoney(result.localTax)}</td></tr>
-                        <tr><td>Social Security:</td><td>${formatMoney(result.socialSecurity)}</td></tr>
-                        <tr><td>Medicare:</td><td>${formatMoney(result.medicare)}</td></tr>
-                        <tr><td>Total Tax:</td><td>${formatMoney(result.totalTax)}</td></tr>
-                        <tr><td>Take-Home Pay:</td><td>${formatMoney(result.takehomePay)}</td></tr>
-                        <tr><td>Cost of Living Index:</td><td>${result.costIndex.toFixed(2)}</td></tr>
-                        <tr><td>Estimated Annual Expenses:</td><td>${formatMoney(result.annualExpenses)}</td></tr>
-                        <tr><td>Remaining Money:</td><td>${formatMoney(result.remainingMoney)}</td></tr>
-                    </table>
-                </div>
-            `;
-            container.appendChild(resultDiv);
-        });
-    }
-
-    function validateForm() {
-        const salary = document.getElementById('salary').value.trim();
-        const location1 = document.getElementById('location1').value;
-        
-        if (!salary || !location1) {
-            alert('Please enter your salary and select at least one location.');
-            return false;
-        }
-        return true;
-    }
-
-    // Event listeners
-    document.addEventListener('DOMContentLoaded', function() {
-        populateLocations();
-
-        const salaryInput = document.getElementById('salary');
-        salaryInput.addEventListener('input', function(e) {
-            let value = e.target.value.replace(/[^0-9]/g, '');
-            if (value !== '') {
-                value = parseInt(value, 10).toLocaleString('en-US');
+        // Quiz questions database
+        const quizQuestions = [
+            {
+                question: "Using the Rule of 72, approximately how long will it take to double your money at 6% annual returns?",
+                options: ["8 years", "12 years", "15 years", "10 years"],
+                correct: 1,
+                explanation: "72 ÷ 6 = 12 years"
+            },
+            {
+                question: "What is typically considered a high expense ratio for an index fund?",
+                options: ["0.1%", "0.3%", "0.5%", "Above 0.75%"],
+                correct: 3,
+                explanation: "Index funds should typically have expense ratios below 0.2%"
+            },
+            {
+                question: "According to Fama-French research, what has historically led to small cap value outperformance?",
+                options: ["Pure luck", "Size and value risk premiums", "Marketing", "Lower costs"],
+                correct: 1,
+                explanation: "The size and value risk premiums have historically provided higher returns"
             }
-            e.target.value = value;
-        });
-
-        const locationSelects = [
-            document.getElementById('location1'),
-            document.getElementById('location2'),
-            document.getElementById('location3')
         ];
 
-        locationSelects.forEach((select, index) => {
-            select.addEventListener('change', function() {
-                const selectedValue = this.value;
-                locationSelects.forEach((otherSelect, otherIndex) => {
-                    if (otherIndex !== index) {
-                        Array.from(otherSelect.options).forEach(option => {
-                            option.disabled = (option.value === selectedValue && selectedValue !== '');
-                        });
+        // Navigation function
+        function showModule(moduleId) {
+            document.querySelectorAll('.module').forEach(module => {
+                module.classList.remove('active');
+            });
+            document.getElementById(moduleId).classList.add('active');
+
+            // Initialize specific module content
+            if (moduleId === 'module5') {
+                initializeQuiz();
+            }
+        }
+
+        // Compound interest calculator
+        function calculateCompound() {
+            const principal = parseFloat(document.getElementById('principal').value);
+            const monthlyContribution = parseFloat(document.getElementById('monthlyContribution').value);
+            const rate = parseFloat(document.getElementById('rate').value) / 100;
+            const years = parseInt(document.getElementById('years').value);
+            
+            let data = {
+                labels: [],
+                principalData: [],
+                totalData: []
+            };
+            
+            let balance = principal;
+            let totalContributions = principal;
+            
+            for (let year = 0; year <= years; year++) {
+                data.labels.push(`Year ${year}`);
+                data.principalData.push(totalContributions);
+                data.totalData.push(balance);
+                
+                balance = balance * (1 + rate) + (monthlyContribution * 12);
+                totalContributions += monthlyContribution * 12;
+            }
+
+            displayCompoundingChart(data);
+        }
+
+        // Display compounding chart
+        function displayCompoundingChart(data) {
+            const ctx = document.getElementById('compoundingCanvas').getContext('2d');
+            
+            if (compoundingChart) {
+                compoundingChart.destroy();
+            }
+
+            compoundingChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Total Value',
+                        data: data.totalData,
+                        borderColor: 'rgb(0, 106, 106)',
+                        backgroundColor: 'rgba(0, 106, 106, 0.1)',
+                        fill: true
+                    }, {
+                        label: 'Total Contributions',
+                        data: data.principalData,
+                        borderColor: 'rgb(74, 99, 99)',
+                        backgroundColor: 'rgba(74, 99, 99, 0.1)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': $' + context.raw.toLocaleString();
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        }
                     }
+                }
+            });
+        }
+
+        // Fund comparison calculator
+        function compareFunds() {
+            const investment = parseFloat(document.getElementById('investment').value);
+            const fund1Expense = parseFloat(document.getElementById('fund1Expense').value) / 100;
+            const fund2Expense = parseFloat(document.getElementById('fund2Expense').value) / 100;
+            const years = 30;
+            const marketReturn = 0.07;
+
+            let data = {
+                labels: [],
+                fund1Data: [],
+                fund2Data: []
+            };
+
+            let balance1 = investment;
+            let balance2 = investment;
+
+            for (let year = 0; year <= years; year++) {
+                data.labels.push(`Year ${year}`);
+                data.fund1Data.push(balance1);
+                data.fund2Data.push(balance2);
+
+                balance1 *= (1 + marketReturn - fund1Expense);
+                balance2 *= (1 + marketReturn - fund2Expense);
+            }
+
+            displayFundComparison(data);
+        }
+
+        // Display fund comparison chart
+        function displayFundComparison(data) {
+            const ctx = document.getElementById('fundCanvas').getContext('2d');
+            
+            if (fundComparisonChart) {
+                fundComparisonChart.destroy();
+            }
+
+            fundComparisonChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Low-Cost Fund',
+                        data: data.fund1Data,
+                        borderColor: 'rgb(0, 106, 106)',
+                        backgroundColor: 'rgba(0, 106, 106, 0.1)',
+                        fill: true
+                    }, {
+                        label: 'High-Cost Fund',
+                        data: data.fund2Data,
+                        borderColor: 'rgb(186, 26, 26)',
+                        backgroundColor: 'rgba(186, 26, 26, 0.1)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': $' + context.raw.toLocaleString();
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Show index comparison
+        function showIndexComparison() {
+            const ctx = document.getElementById('indexCanvas').getContext('2d');
+            
+            if (indexComparisonChart) {
+                indexComparisonChart.destroy();
+            }
+
+            // Historical data (simplified for demonstration)
+            const data = {
+                labels: ['1926', '1936', '1946', '1956', '1966', '1976', '1986', '1996', '2006', '2016', '2023'],
+                sp500: [1, 1.5, 2.8, 5.2, 8.1, 12.4, 25.6, 85.3, 156.2, 245.8, 380.5],
+                smallCapValue: [1, 1.8, 3.5, 7.1, 11.2, 18.6, 42.3, 145.6, 284.5, 456.2, 680.2]
+            };
+
+            indexComparisonChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'S&P 500',
+                        data: data.sp500,
+                        borderColor: 'rgb(0, 106, 106)',
+                        backgroundColor: 'rgba(0, 106, 106, 0.1)',
+                        fill: true
+                    }, {
+                        label: 'Small Cap Value',
+                        data: data.smallCapValue,
+                        borderColor: 'rgb(75, 96, 124)',
+                        backgroundColor: 'rgba(75, 96, 124, 0.1)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            type: 'logarithmic',
+                            ticks: {
+                                callback: function(value) {
+                                    return `${value}x`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Calculate timing impact
+        function calculateTimingImpact() {
+            const investment = parseFloat(document.getElementById('investmentAmount').value);
+            const missedDays = parseInt(document.getElementById('missedDays').value);
+            
+            // Historical data shows missing the 10 best days can reduce returns by roughly half
+            const fullReturn = investment * 2.5;
+            const missedReturn = investment * (1 + (1.5 * (10 - missedDays) / 10));
+            
+            const ctx = document.getElementById('timingCanvas').getContext('2d');
+            
+            if (timingImpactChart) {
+                timingImpactChart.destroy();
+            }
+
+            timingImpactChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Stayed Invested', 'Missed Best Days'],
+                    datasets: [{
+                        label: 'Portfolio Value',
+                        data: [fullReturn, missedReturn],
+                        backgroundColor: [
+                            'rgba(0, 106, 106, 0.6)',
+                            'rgba(186, 26, 26, 0.6)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return '$' + context.raw.toLocaleString();
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Simulate portfolio rebalancing
+        function simulateRebalancing() {
+            const stockTarget = parseFloat(document.getElementById('stockAllocation').value) / 100;
+            const bondTarget = parseFloat(document.getElementById('bondAllocation').value) / 100;
+            const portfolioValue = parseFloat(document.getElementById('portfolioValue').value);
+            
+            // Simulate market changes
+            const marketChanges = [
+                { stocks: 0.15, bonds: 0.02 },
+                { stocks: -0.10, bonds: 0.05 },
+                { stocks: 0.20, bonds: -0.01 },
+                { stocks: -0.05, bonds: 0.08 }
+            ];
+
+            let data = {
+                labels: ['Initial', 'Q1', 'Q2', 'Q3', 'Q4'],
+                stocksActual: [stockTarget],
+                bondsActual: [bondTarget],
+                stocksTarget: [stockTarget],
+                bondsTarget: [bondTarget]
+            };
+
+            let currentStocks = portfolioValue * stockTarget;
+            let currentBonds = portfolioValue * bondTarget;
+
+            marketChanges.forEach(change => {
+                currentStocks *= (1 + change.stocks);
+                currentBonds *= (1 + change.bonds);
+                const total = currentStocks + currentBonds;
+                
+                data.stocksActual.push(currentStocks / total);
+                data.bondsActual.push(currentBonds / total);
+                data.stocksTarget.push(stockTarget);
+                data.bondsTarget.push(bondTarget);
+            });
+
+            displayRebalancing(data);
+        }
+
+        // Display rebalancing chart
+        function displayRebalancing(data) {
+            const ctx = document.getElementById('rebalancingCanvas').getContext('2d');
+            
+            if (rebalancingChart) {
+                rebalancingChart.destroy();
+            }
+
+            rebalancingChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Actual Stock Allocation',
+                        data: data.stocksActual.map(v => v * 100),
+                        borderColor: 'rgb(0, 106, 106)',
+                        borderDash: []
+                    }, {
+                        label: 'Target Stock Allocation',
+                        data: data.stocksTarget.map(v => v * 100),
+                        borderColor: 'rgb(0, 106, 106)',
+                        borderDash: [5, 5]
+                    }, {
+                        label: 'Actual Bond Allocation',
+                        data: data.bondsActual.map(v => v * 100),
+                        borderColor: 'rgb(75, 96, 124)',
+                        borderDash: []
+                    }, {
+                        label: 'Target Bond Allocation',
+                        data: data.bondsTarget.map(v => v * 100),
+                        borderColor: 'rgb(75, 96, 124)',
+                        borderDash: [5, 5]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                ticks: {
+                                    callback: function(value) {
+                                        return value + '%';
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.dataset.label + ': ' + context.raw.toFixed(1) + '%';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Quiz functionality
+        function initializeQuiz() {
+            const quizContainer = document.getElementById('quizContent');
+            quizContainer.innerHTML = '';
+
+            quizQuestions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'quiz-question';
+                
+                questionDiv.innerHTML = `
+                    <h4>Question ${index + 1}: ${q.question}</h4>
+                    <div class="quiz-options">
+                        ${q.options.map((option, i) => `
+                            <div class="quiz-option" onclick="checkAnswer(${index}, ${i})">
+                                ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div id="explanation-${index}" class="explanation" style="display: none;"></div>
+                `;
+                
+                quizContainer.appendChild(questionDiv);
+            });
+        }
+
+        function checkAnswer(questionIndex, selectedIndex) {
+            const question = quizQuestions[questionIndex];
+            const options = document.querySelectorAll(`.quiz-question:nth-child(${questionIndex + 1}) .quiz-option`);
+            const explanationDiv = document.getElementById(`explanation-${questionIndex}`);
+            
+            options.forEach((option, index) => {
+                if (index === question.correct) {
+                    option.classList.add('correct');
+                } else if (index === selectedIndex) {
+                    option.classList.add('incorrect');
+                }
+                option.onclick = null; // Prevent further clicks
+            });
+
+            explanationDiv.style.display = 'block';
+            explanationDiv.innerHTML = `
+                <p><strong>${selectedIndex === question.correct ? 'Correct!' : 'Incorrect.'}</strong></p>
+                <p>${question.explanation}</p>
+            `;
+        }
+
+        // Helper functions
+        function formatMoney(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(amount);
+        }
+
+        function formatPercent(value) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'percent',
+                minimumFractionDigits: 1,
+                maximumFractionDigits: 1
+            }).format(value);
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show first module by default
+            showModule('module1');
+            
+            // Calculate initial compound interest example
+            calculateCompound();
+            
+            // Add input validation
+            document.querySelectorAll('input[type="number"]').forEach(input => {
+                input.addEventListener('input', function() {
+                    let value = this.value.replace(/[^\d.-]/g, '');
+                    if (this.id.includes('Allocation')) {
+                        value = Math.min(100, Math.max(0, value));
+                    }
+                    this.value = value;
                 });
             });
         });
-    });
     </script>
 </body>
 </html>
